@@ -28,36 +28,30 @@ public class Generator {
 	public static void createJson(String path, String modid, String fileName, Block block) {
 		File json = new File(path + "/assets/" + modid + "/blockstates/" + fileName + ".json");
 		File folders = new File(path + "/assets/" + modid + "/blockstates/");
-		System.out.println("Created file instance " + json.getAbsolutePath());
 		if (json.exists()) return;
-			System.out.println("File does not exist.");
 			folders.mkdirs();
 			try {
 				json.createNewFile();
-				System.out.println("File created.");
 				if (!json.canWrite()) json.setWritable(true);
 				Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 				JsonObject obj = new JsonObject();
 				JsonObject element = new JsonObject();
 				Collection<IBlockState> collec = block.getBlockState().getValidStates();
 				for (IBlockState state : collec) {
-					System.out.println("Looping through state.");
 					Collection<IProperty<?>> properties = state.getPropertyNames();
 					String[] names = new String[properties.size()], values = new String[properties.size()];
 					for (int i = 0; i < names.length; i++) {
 						IProperty<?> prop = (IProperty<?>) properties.toArray()[i];
 						names[i] = prop.getName();
 						values[i] = state.getProperties().get(prop).toString();
-						System.out.println("Looping through states properties. " + names[i] + " " + values[i]);
 					}
-					System.out.println("Creating tag builder.");
 					StringBuilder tagBuilder = new StringBuilder();
 					for (int i = 0; i < properties.size(); i++) {
 						if (i == properties.size() - 1) {
 							tagBuilder.append(names[i] + "=" + values[i]);
 						} else tagBuilder.append(names[i] + "=" + values[i] + ",");
 					}
-					System.out.println("String " + tagBuilder.toString());
+
 					element.add(tagBuilder.toString(), new JsonObject());
 				}
 				obj.add("variants", element);
